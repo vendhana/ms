@@ -1,0 +1,85 @@
+version: '3.8'
+services:
+    service-config:
+        container_name: service-config
+        image: co.in.va.ms.api/service_config:0.0.1
+        expose:
+            - 8020
+        ports:
+            - 8020:8020
+        networks:
+            - ms-network
+    service-registry:
+        container_name: service-registry
+        image: co.in.va.ms.api/service_registry:0.0.1
+        restart: on-failure
+        expose:
+            - 8000
+        ports:
+            - 8000:8000
+        networks:
+            - ms-network
+        environment:
+            - CONFIG_SERVER=http://service-config:8020
+            - EUREKA_SERVER=http://service-registry:8000/eureka
+        links:
+            - service-config:service-config
+        depends_on:
+            - service-config
+    service-gateway:
+        container_name: service-gateway
+        image: co.in.va.ms.api/service_gateway:0.0.1
+        restart: on-failure
+        expose:
+            - 8080
+        ports:
+            - 8080:8080
+        networks:
+            - ms-network
+        environment:
+            - CONFIG_SERVER=http://service-config:8020
+            - EUREKA_SERVER=http://service-registry:8000/eureka
+        links:
+            - service-config:service-config
+            - service-registry:service-registry
+        depends_on:
+            - service-registry
+    customer-service:
+        container_name: customer-service
+        image: co.in.va.ms.api/customer_service:0.0.1
+        restart: on-failure
+        expose:
+            - 7020
+        ports:
+            - 7020:7020
+        networks:
+            - ms-network
+        environment:
+            - CONFIG_SERVER=http://service-config:8020
+            - EUREKA_SERVER=http://service-registry:8000/eureka
+        links:
+            - service-config:service-config
+            - service-registry:service-registry
+        depends_on:
+            - service-gateway
+    order-service:
+        container_name: order-service
+        image: co.in.va.ms.api/order_service:0.0.1
+        restart: on-failure
+        expose:
+            - 7010
+        ports:
+            - 7010:7010
+        networks:
+            - ms-network
+        environment:
+            - CONFIG_SERVER=http://service-config:8020
+            - EUREKA_SERVER=http://service-registry:8000/eureka
+        links:
+            - service-config:service-config
+            - service-registry:service-registry
+        depends_on:
+            - service-gateway
+networks:
+    ms-network:
+        driver: bridge
