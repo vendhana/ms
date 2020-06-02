@@ -1,0 +1,37 @@
+# ... Deployment YAML definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-gateway
+  template:
+    metadata:
+      labels:
+        app: service-gateway
+    spec:
+      containers:
+        - name: service-gateway
+          image: co.in.va.ms.api/service_gateway:0.0.2
+          env:
+            - name: CONFIG_SERVER
+              value: http://$(SERVICE_CONFIG_SERVICE_HOST):$(SERVICE_CONFIG_SERVICE_PORT)
+            - name: EUREKA_SERVER
+              value: http://$(SERVICE_REGISTRY_SERVICE_HOST):$(SERVICE_REGISTRY_SERVICE_PORT)/eureka
+
+---
+# ... Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-gateway
+spec:
+  selector:
+    app: service-gateway
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer

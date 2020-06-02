@@ -42,10 +42,32 @@ The business functionality of the project is to expose APIs to list down Orders 
 | Orchestration | Docker Compose | docker-compose.yml |
 
 ### Performance 
-|| Jar Size (mB) | Image Size (MB) | Instance Size (MB) | Start up Time (s)|
+|| Jar Size (mB) | Image Size (MB) | Start up Time (s)|
 |--|--|--|--|--|
-| service_config | 34 | 282 | 163 | 25 |
-| service_registry | 50 | 297 | 212 | 33 |
-| service_gateway | 48 | 295 | 201 | 33 |
-| customer_service | 64 | 311 | 239 | 44 |
-| order_service | 64 | 313 | 251 | 49 |
+| service_config | 34 | 282 | 25 |
+| service_registry | 50 | 297  | 33 |
+| service_gateway | 48 | 295  | 33 |
+| customer_service | 64 | 311  | 44 |
+| order_service | 64 | 313  | 49 |
+
+#### 0.0.2 *[Only Changed sections are mentioned]*
+
+- Removed Instance Size (MB) in Performance Observation
+- Orchestration using Kubernetes
+- Usage of IPAddress for Eureka Client Instance
+
+### Containerisation
+|| Component | Reference|
+|--|--|--|
+| Image Build | Spring Maven |service_config, service_registry, service_gateway, customer_service, order_service|
+| Orchestration | Kubernetes | kubernetes.yml *[Project Specific]* |
+
+### Performance 
+|| Jar Size (mB) | Image Size (MB) | Start up Time (s)|
+|--|--|--|--|--|
+| service_config | 34 | 282 | 83 |
+| service_registry | 50 | 297  | 115 |
+| service_gateway | 48 | 295  | 95 |
+| customer_service | 64 | 311  | 140 |
+| order_service | 64 | 313  | 139 |
+

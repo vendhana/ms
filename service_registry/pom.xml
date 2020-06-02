@@ -13,7 +13,7 @@
     </parent>
     <groupId>co.in.va.ms.api</groupId>
     <artifactId>service_registry</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>service_registry</name>
     <description>Registry for Services </description>
     <properties>

@@ -1,0 +1,37 @@
+# ... Deployment YAML definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: co.in.va.ms.api/order_service:0.0.2
+          env:
+            - name: CONFIG_SERVER
+              value: http://$(SERVICE_CONFIG_SERVICE_HOST):$(SERVICE_CONFIG_SERVICE_PORT)
+            - name: EUREKA_SERVER
+              value: http://$(SERVICE_REGISTRY_SERVICE_HOST):$(SERVICE_REGISTRY_SERVICE_PORT)/eureka
+
+---
+# ... Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order-service
+  ports:
+    - port: 7010
+      targetPort: 7010
+  type: LoadBalancer

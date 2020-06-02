@@ -1,0 +1,37 @@
+# ... Deployment YAML definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-service
+  template:
+    metadata:
+      labels:
+        app: customer-service
+    spec:
+      containers:
+        - name: customer-service
+          image: co.in.va.ms.api/customer_service:0.0.2
+          env:
+            - name: CONFIG_SERVER
+              value: http://$(SERVICE_CONFIG_SERVICE_HOST):$(SERVICE_CONFIG_SERVICE_PORT)
+            - name: EUREKA_SERVER
+              value: http://$(SERVICE_REGISTRY_SERVICE_HOST):$(SERVICE_REGISTRY_SERVICE_PORT)/eureka
+
+---
+# ... Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service
+spec:
+  selector:
+    app: customer-service
+  ports:
+    - port: 7020
+      targetPort: 7020
+  type: LoadBalancer

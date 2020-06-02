@@ -1,0 +1,31 @@
+# ... Deployment YAML definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-config
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-config
+  template:
+    metadata:
+      labels:
+        app: service-config
+    spec:
+      containers:
+        - name: service-config
+          image: co.in.va.ms.api/service_config:0.0.2
+---
+# ... Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-config
+spec:
+  selector:
+    app: service-config
+  ports:
+    - port: 8020
+      targetPort: 8020
+  type: LoadBalancer
