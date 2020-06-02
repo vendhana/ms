@@ -50,7 +50,7 @@ The business functionality of the project is to expose APIs to list down Orders 
 | customer_service | 64 | 311  | 44 |
 | order_service | 64 | 313  | 49 |
 
-#### 0.0.2 *[Only Changed sections are mentioned]*
+## 0.0.2 *[Only Changed sections are mentioned]*
 
 - Removed Instance Size (MB) in Performance Observation
 - Orchestration using Kubernetes
