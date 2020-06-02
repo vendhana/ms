@@ -43,7 +43,7 @@ The business functionality of the project is to expose APIs to list down Orders 
 
 ### Performance 
 || Jar Size (mB) | Image Size (MB) | Start up Time (s)|
-|--|--|--|--|--|
+|--|--|--|--|
 | service_config | 34 | 282 | 25 |
 | service_registry | 50 | 297  | 33 |
 | service_gateway | 48 | 295  | 33 |
@@ -64,7 +64,7 @@ The business functionality of the project is to expose APIs to list down Orders 
 
 ### Performance 
 || Jar Size (mB) | Image Size (MB) | Start up Time (s)|
-|--|--|--|--|--|
+|--|--|--|--|
 | service_config | 34 | 282 | 83 |
 | service_registry | 50 | 297  | 115 |
 | service_gateway | 48 | 295  | 95 |
