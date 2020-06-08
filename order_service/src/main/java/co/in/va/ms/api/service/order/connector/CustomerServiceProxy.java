@@ -1,17 +1,50 @@
 package co.in.va.ms.api.service.order.connector;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-@FeignClient(name = "customer-service")
-public interface CustomerServiceProxy {
+@Service
+public class CustomerServiceProxy {
 
-    @GetMapping(value =  "/customer/age/{toAge}")
-    public List<Integer> getCustomersIdByAge(@PathVariable Integer toAge);
+        RestTemplate restTemplate = new RestTemplate();
+        @Value("${customer_service.url}")
+        private String url;
 
-    @GetMapping(value = "/customer/age/{toAge}/{fromAge}")
-    public List<Integer> getCustomersIdByAge(@PathVariable Integer toAge, @PathVariable Integer fromAge);
+        public List<Integer> getCustomersIdByAge(Integer toAge) {
+                final HttpHeaders headers = new HttpHeaders();
+                headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+                Map<String, Integer> map = new HashMap<>();
+                map.put("toAge", toAge);
+                HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+                HttpEntity<List<Integer>> responseEntity = restTemplate.exchange(url + "/customer/age/{toAge}",
+                                HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<Integer>>() {
+                                }, map);
+                return responseEntity.getBody();
+
+        }
+
+        public List<Integer> getCustomersIdByAge(Integer toAge, Integer fromAge) {
+                final HttpHeaders headers = new HttpHeaders();
+                headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+                Map<String, Integer> map = new HashMap<>();
+                map.put("toAge", toAge);
+                map.put("fromAge", fromAge);
+                HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+                HttpEntity<List<Integer>> responseEntity = restTemplate.exchange(
+                                url + "/customer/age/{toAge}/{fromAge}", HttpMethod.GET, requestEntity,
+                                new ParameterizedTypeReference<List<Integer>>() {
+                                }, map);
+                return responseEntity.getBody();
+        }
 }

@@ -1,8 +1,18 @@
+# ... Namespace YAML definition
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ms
+  labels:
+    name: ms
+
+---
 # ... Deployment YAML definition
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: order-service
+  namespace: ms
 spec:
   replicas: 1
   selector:
@@ -13,14 +23,19 @@ spec:
       labels:
         app: order-service
     spec:
+      initContainers:
+        - name: init-config
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup service-config.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for service-config; sleep 5; done"]
+        - name: init-customer
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup customer-service.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for customer-service; sleep 5; done"]
       containers:
         - name: order-service
-          image: co.in.va.ms.api/order_service:0.0.2
+          image: co.in.va.ms.api/order_service:0.0.3
           env:
             - name: CONFIG_SERVER
               value: http://$(SERVICE_CONFIG_SERVICE_HOST):$(SERVICE_CONFIG_SERVICE_PORT)
-            - name: EUREKA_SERVER
-              value: http://$(SERVICE_REGISTRY_SERVICE_HOST):$(SERVICE_REGISTRY_SERVICE_PORT)/eureka
 
 ---
 # ... Service YAML definition
@@ -28,6 +43,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: order-service
+  namespace: ms
 spec:
   selector:
     app: order-service

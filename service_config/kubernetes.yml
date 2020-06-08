@@ -1,8 +1,18 @@
+# ... Namespace YAML definition
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ms
+  labels:
+    name: ms
+
+---
 # ... Deployment YAML definition
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-config
+  namespace: ms
 spec:
   replicas: 1
   selector:
@@ -15,13 +25,14 @@ spec:
     spec:
       containers:
         - name: service-config
-          image: co.in.va.ms.api/service_config:0.0.2
+          image: co.in.va.ms.api/service_config:0.0.3
 ---
 # ... Service YAML definition
 apiVersion: v1
 kind: Service
 metadata:
   name: service-config
+  namespace: ms
 spec:
   selector:
     app: service-config

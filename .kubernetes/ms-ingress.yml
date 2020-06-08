@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ms-ingresss
+  namespace: ms
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1/$2/$3
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/(order)/(.*)
+        backend:
+          serviceName: order-service
+          servicePort: 7010
+      - path: /api/(customer)/(.*)
+        backend:
+          serviceName: customer-service
+          servicePort: 7020
